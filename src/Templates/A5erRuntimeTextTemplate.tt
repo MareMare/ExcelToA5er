@@ -1,0 +1,39 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+# A5:ER FORMAT:15
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.16.2 Copyright © 1997 - 2021 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+Page=Main
+PageInfo="Main",7,"A3Landscape",$FFFFFF
+LogicalView = 1
+ViewModePageIndividually=1
+ViewMode=7
+FontName=Tahoma
+FontSize=6
+PaperSize=A3Landscape
+RDBMSType=4
+RDBMSTypeName=Microsoft SQL Server 2008
+
+<# foreach (var tableInfo in this.TableDefinitions) { #>
+<# var point = this.ToPoint(tableInfo); #>
+
+[Entity]
+PName=<#= tableInfo.PhysicalName #>
+LName=<#= tableInfo.LogicalName #>
+Comment=
+TableOption=
+Page=MAIN
+Left=<#= point.X #>
+Top=<#= point.Y #>
+<# foreach (var columnInfo in tableInfo.ColumnDefinitions) { #>
+Field="<#= columnInfo.LogicalName #>","<#= columnInfo.PhysicalName #>","<#= columnInfo.SqlDataTypeName #>",<#= columnInfo.IsNotNullText #>,<#= columnInfo.PkNumberText #>,"","<#= columnInfo.Comment #>",$FFFFFFFF,""
+<# } #>
+Position="MAIN",<#= point.X #>,<#= point.Y #>
+<# } #>

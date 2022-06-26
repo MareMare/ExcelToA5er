@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB4C7AE5-249D-4241-B9FE-084FE90BB66D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		NuGet.config = NuGet.config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelToA5er", "src\ExcelToA5er.csproj", "{AF08EEEC-E476-4121-A854-9811B3EC77F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF08EEEC-E476-4121-A854-9811B3EC77F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF08EEEC-E476-4121-A854-9811B3EC77F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF08EEEC-E476-4121-A854-9811B3EC77F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF08EEEC-E476-4121-A854-9811B3EC77F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {20C983FD-9AA7-4961-8DF0-1AA2C4539BD7}
+	EndGlobalSection
+EndGlobal
