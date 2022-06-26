@@ -1,0 +1,63 @@
+name: Create Release and Upload Asset
+
+# https://github.com/actions/upload-release-asset
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    
+    # https://github.community/t/how-to-get-just-the-tag-name/16241/17
+    # ${{ steps.get_version.outputs.VERSION }}
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      shell: bash
+    
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish ExcelToA5er
+      run: dotnet publish --configuration Release -p:PublishProfile=FolderProfile src\ExcelToA5er.csproj
+    - name: Archive
+      shell: pwsh
+      run: |
+        Compress-Archive -Path ".\src\bin\publish\ExcelToA5er-win-x64" -DestinationPath ".\ExcelToA5er-win-x64.zip"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          TBD
+        draft: true
+        prerelease: true
+
+    - name: Upload ExcelToA5er Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: .\ExcelToA5er-win-x64.zip
+        asset_name: ExcelToA5er-win-x64.zip
+        asset_content_type: application/zip

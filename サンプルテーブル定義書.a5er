@@ -1,0 +1,78 @@
+﻿# A5:ER FORMAT:15
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.16.2 Copyright © 1997 - 2021 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+Page=Main
+PageInfo="Main",7,"A3Landscape",$FFFFFF
+LogicalView = 1
+ViewModePageIndividually=1
+ViewMode=7
+FontName=Tahoma
+FontSize=6
+PaperSize=A3Landscape
+RDBMSType=4
+RDBMSTypeName=Microsoft SQL Server 2008
+
+
+[Entity]
+PName=T_SANDBOX1
+LName=サンドボックス1
+Comment=
+TableOption=
+Page=MAIN
+Left=50
+Top=50
+Field="カラム１","COL1","tinyint","NOT NULL",0,"","コメント1：必須∧PK",$FFFFFFFF,""
+Field="カラム２","COL2","int",,1,"","コメント2：PK",$FFFFFFFF,""
+Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必須",$FFFFFFFF,""
+Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
+Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
+Position="MAIN",50,50
+
+[Entity]
+PName=T_SANDBOX2
+LName=サンドボックス2
+Comment=
+TableOption=
+Page=MAIN
+Left=150
+Top=150
+Field="カラム１","COL1","tinyint","NOT NULL",0,"","コメント1：必須∧PK",$FFFFFFFF,""
+Field="カラム２","COL2","int",,1,"","コメント2：PK",$FFFFFFFF,""
+Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必須",$FFFFFFFF,""
+Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
+Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
+Position="MAIN",150,150
+
+[Entity]
+PName=T_SANDBOX3
+LName=サンドボックス3
+Comment=
+TableOption=
+Page=MAIN
+Left=250
+Top=250
+Field="カラム１","COL1","tinyint","NOT NULL",0,"","コメント1：必須∧PK",$FFFFFFFF,""
+Field="カラム２","COL2","int",,1,"","コメント2：PK",$FFFFFFFF,""
+Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必須",$FFFFFFFF,""
+Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
+Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
+Position="MAIN",250,250
+
+[Entity]
+PName=T_SANDBOX4
+LName=サンドボックス4
+Comment=
+TableOption=
+Page=MAIN
+Left=350
+Top=350
+Field="カラム１","COL1","tinyint","NOT NULL",0,"","コメント1：必須∧PK",$FFFFFFFF,""
+Field="カラム２","COL2","int",,1,"","コメント2：PK",$FFFFFFFF,""
+Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必須",$FFFFFFFF,""
+Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
+Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
+Position="MAIN",350,350
