@@ -1,0 +1,40 @@
+name: .NET Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        include:
+          - os: windows-latest
+            osName: Windows
+
+    name: 🚀 [${{ matrix.configuration }}] Build and Test on ${{ matrix.osName }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: ✨ Set up .NET 6.0
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: 🚚 Restore dependencies
+        working-directory: src
+        run: dotnet restore
+
+      - name: 🛠️ Build
+        run: dotnet build --configuration $env:Configuration --no-restore
+        env:
+          Configuration: ${{ matrix.configuration }}
