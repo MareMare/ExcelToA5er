@@ -50,7 +50,7 @@ public partial class MainForm : Form
     private async Task<XlsxInformation> LoadXlsxAsync(string xlsxFilePath)
     {
         using var progressForm = new ProgressForm { Title = "読み込み" };
-        await using var progressScoap = progressForm.UseProgressFormScoap(this);
+        await using var progressScoap = progressForm.UseProgressFormScope(this);
         progressScoap.Reporter.ReportStarting("読み込み中です。しばらくお待ちください。");
 
         var loadTask = XlsxInformation.LoadAsync(xlsxFilePath);
@@ -71,7 +71,7 @@ public partial class MainForm : Form
     private async Task SaveA5erAsync(string outputPath, ICollection<TableDefinition> tableDefinitions)
     {
         using var progressForm = new ProgressForm { Title = "変換" };
-        await using var progressScoap = progressForm.UseProgressFormScoap(this);
+        await using var progressScoap = progressForm.UseProgressFormScope(this);
         progressScoap.Reporter.ReportStarting("変換中です。しばらくお待ちください。");
 
         var generateTask = new A5erRuntimeTextTemplate(tableDefinitions).GenerateAsync(outputPath);

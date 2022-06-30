@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IProgressScoap.cs" company="MareMare">
+// <copyright file="IProgressScope.cs" company="MareMare">
 // Copyright © 2021 MareMare All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,7 +10,7 @@ namespace ExcelToA5er.Progress;
 /// <summary>
 /// 進捗表示する範囲を提供するインターフェイスを表します。
 /// </summary>
-public interface IProgressScoap : IAsyncDisposable
+public interface IProgressScope : IAsyncDisposable
 {
     /// <summary>
     /// 進行状況の報告者を取得します。

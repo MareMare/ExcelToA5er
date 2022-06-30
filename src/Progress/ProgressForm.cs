@@ -23,7 +23,7 @@ public partial class ProgressForm : Form
     public ProgressForm()
     {
         this.InitializeComponent();
-        this._progressReporter = new ProgressReporter(progressInfo => this.UpdateBy(progressInfo));
+        this._progressReporter = new ProgressReporter(this.UpdateBy);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class ProgressForm : Form
     /// </summary>
     /// <param name="owner">フォームを所有するトップレベルウィンドウ。</param>
     /// <returns>進捗表示する範囲。</returns>
-    public IProgressScoap UseProgressFormScoap(IWin32Window owner) => new ProgressFormScoap(this, this.ShowDialogAsync(owner));
+    public IProgressScope UseProgressFormScope(IWin32Window owner) => new ProgressFormScope(this, this.ShowDialogAsync(owner));
 
     /// <inheritdoc/>
     protected override void OnLoad(EventArgs e)
@@ -87,7 +87,7 @@ public partial class ProgressForm : Form
     /// <summary>
     /// 進捗表示する範囲を表します。
     /// </summary>
-    private sealed class ProgressFormScoap : IProgressScoap
+    private class ProgressFormScope : IProgressScope
     {
         /// <summary><see cref="ProgressForm"/> を表します。</summary>
         private readonly ProgressForm _progressForm;
@@ -96,14 +96,17 @@ public partial class ProgressForm : Form
         private readonly Task<DialogResult> _progressFormTask;
 
         /// <summary>
-        /// <see cref="ProgressFormScoap"/> クラスの新しいインスタンスを生成します。
+        /// <see cref="ProgressFormScope"/> クラスの新しいインスタンスを生成します。
         /// </summary>
         /// <param name="progressForm"><see cref="ProgressForm"/>。</param>
         /// <param name="progressFormTask">表示完了を表すタスク。</param>
-        public ProgressFormScoap(ProgressForm progressForm, Task<DialogResult> progressFormTask)
+        public ProgressFormScope(ProgressForm progressForm, Task<DialogResult> progressFormTask)
         {
-            this._progressForm = progressForm ?? throw new ArgumentNullException(nameof(progressForm));
-            this._progressFormTask = progressFormTask ?? throw new ArgumentNullException(nameof(progressFormTask));
+            ArgumentNullException.ThrowIfNull(progressForm);
+            ArgumentNullException.ThrowIfNull(progressFormTask);
+
+            this._progressForm = progressForm;
+            this._progressFormTask = progressFormTask;
             this.Reporter = progressForm._progressReporter;
         }
 
@@ -114,11 +117,8 @@ public partial class ProgressForm : Form
         public async ValueTask DisposeAsync()
         {
             // NOTE: https://stackoverflow.com/a/33411037
-            this._progressForm?.Close();
-            if (this._progressFormTask != null)
-            {
-                await this._progressFormTask.ConfigureAwait(true);
-            }
+            this._progressForm.Close();
+            await this._progressFormTask.ConfigureAwait(true);
         }
     }
 }

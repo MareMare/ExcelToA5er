@@ -26,7 +26,7 @@ public class ProgressInfo
     /// 値を表す <see cref="string" /> 型。
     /// <para>進捗メッセージ。既定値は null です。</para>
     /// </value>
-    public string? Message { get; private set; }
+    public string? Message { get; private init; }
 
     /// <summary>
     /// 進捗率 (0～100%) を取得します。
@@ -35,7 +35,7 @@ public class ProgressInfo
     /// 値を表す <see cref="double" /> 型。
     /// <para>進捗率 (0～100%)。既定値は 0d です。</para>
     /// </value>
-    public double Percentage { get; private set; }
+    public double Percentage { get; private init; }
 
     /// <summary>
     /// 新しいインスタンスを生成します。

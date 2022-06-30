@@ -21,7 +21,7 @@ internal static class FormExtensions
     public static async Task ShowAsync(this Form form, IWin32Window owner)
     {
         var tcs = new TaskCompletionSource<bool>();
-        form.FormClosed += (_, __) => tcs.TrySetResult(true);
+        form.FormClosed += (_, _) => tcs.TrySetResult(true);
         form.Show(owner);
         await tcs.Task.ConfigureAwait(false);
     }
