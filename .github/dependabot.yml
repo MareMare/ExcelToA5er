@@ -11,6 +11,8 @@ updates:
       interval: "daily"
       time: "04:00"
       timezone: "Asia/Tokyo"
+    reviewers:
+      - "MareMare"
     labels:
       - "dependencies"
     target-branch: "main"
