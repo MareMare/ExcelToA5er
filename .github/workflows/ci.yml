@@ -11,23 +11,21 @@ on:
     paths:
     - "src/**"
   
-env:
-  CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: src
-  TESTING_DIRECTORY: src
-
 jobs:
   build:
-    runs-on: windows-latest
-    steps:
-    - name: 🛒 Checkout
-      uses: actions/checkout@v3
-    - name: ✨ Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: 🚚 Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-    - name: 🛠️ Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            osName: Windows
+    name: Build on ${{ matrix.osName }}
+    permissions:
+      contents: read
+    uses: MareMare/ReusableWorkflows/.github/workflows/ci.net6.yml@main
+    with:
+      runner-os: ${{ matrix.os }}
+      working-directory: src
+      testing-directory: src
+      run-unittest: 'false'
+      unittest-filter: ''
