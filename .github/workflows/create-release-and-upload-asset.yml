@@ -18,7 +18,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     
     # https://github.community/t/how-to-get-just-the-tag-name/16241/17
     # ${{ steps.get_version.outputs.VERSION }}
