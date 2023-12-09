@@ -76,3 +76,18 @@ Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必�
 Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
 Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
 Position="MAIN",350,350
+
+[Entity]
+PName=T_SANDBOX5
+LName=サンドボックス5
+Comment=
+TableOption=
+Page=MAIN
+Left=450
+Top=450
+Field="カラム１","COL1","tinyint","NOT NULL",0,"","コメント1：必須∧PK",$FFFFFFFF,""
+Field="カラム２","COL2","int",,1,"","コメント2：PK",$FFFFFFFF,""
+Field="カラム３","COL3","decimal(6, 0)","NOT NULL",,"","コメント3：必須",$FFFFFFFF,""
+Field="カラム４","COL4","nvarchar(20)",,,"","",$FFFFFFFF,""
+Field="カラム５","COL5","datetime",,,"","コメント5",$FFFFFFFF,""
+Position="MAIN",450,450
