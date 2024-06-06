@@ -5,12 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ExcelToA5er.Metadatas;
+namespace ExcelToA5er.Metadata;
 
 /// <summary>
 /// テーブル定義書情報を表します。
 /// </summary>
-internal partial class XlsxInformation
+internal sealed partial class XlsxInformation
 {
     /// <summary>
     /// XLSX ファイルパスを取得または設定します。
@@ -28,7 +28,7 @@ internal partial class XlsxInformation
     /// 値を表す <see cref="string" /> 型。
     /// <para>A5ER ファイルパス。既定値は null です。</para>
     /// </value>
-    public string A5erFilePath => Path.ChangeExtension(this.XlsxFilePath, ".a5er");
+    public string A5ErFilePath => Path.ChangeExtension(this.XlsxFilePath, ".a5er");
 
     /// <summary>
     /// テーブル情報のコレクションを取得または設定します。

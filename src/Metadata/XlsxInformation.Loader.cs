@@ -7,7 +7,7 @@
 
 using ClosedXML.Excel;
 
-namespace ExcelToA5er.Metadatas;
+namespace ExcelToA5er.Metadata;
 
 /// <summary>
 /// テーブル定義書 Excel ファイル情報を表します。

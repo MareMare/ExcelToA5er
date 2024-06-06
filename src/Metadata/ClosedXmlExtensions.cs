@@ -7,51 +7,51 @@
 
 using ClosedXML.Excel;
 
-namespace ExcelToA5er.Metadatas;
+namespace ExcelToA5er.Metadata;
 
 /// <summary>
-/// Clossed Xml の拡張メソッドを提供します。
+/// Closed Xml の拡張メソッドを提供します。
 /// </summary>
 internal static class ClosedXmlExtensions
 {
     /// <summary>対象シートを判断する識別子のキーワードを表します。</summary>
-    private const string TargetSheetKeyword1 = "テーブル情報";
+    private const string _targetSheetKeyword1 = "テーブル情報";
 
     /// <summary>対象シートを判断する識別子のキーワードを表します。</summary>
-    private const string TargetSheetKeyword2 = "エンティティ情報";
+    private const string _targetSheetKeyword2 = "エンティティ情報";
 
     /// <summary>対象シートの識別子のセルアドレスを表します。</summary>
-    private const string CellOfTargetSheetKeyword = "A1";
+    private const string _cellOfTargetSheetKeyword = "A1";
 
     /// <summary>論理テーブル名のセルアドレスを表します。</summary>
-    private const string CellOfTableLogicalName = "C5";
+    private const string _cellOfTableLogicalName = "C5";
 
     /// <summary>物理テーブル名のセルアドレスを表します。</summary>
-    private const string CellOfTablePhysicalName = "C6";
+    private const string _cellOfTablePhysicalName = "C6";
 
     /// <summary>No.列の先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnNumberName = "A14";
+    private const string _cellOfColumnNumberName = "A14";
 
     /// <summary>論理カラム名の先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnLogicalName = "B14";
+    private const string _cellOfColumnLogicalName = "B14";
 
     /// <summary>物理カラム名の先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnPhysicalName = "C14";
+    private const string _cellOfColumnPhysicalName = "C14";
 
     /// <summary>カラムデータ型名の先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnDataTypeName = "D14";
+    private const string _cellOfColumnDataTypeName = "D14";
 
     /// <summary>必須およびPK列の先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnIsPkOrNotNull = "E14";
+    private const string _cellOfColumnIsPkOrNotNull = "E14";
 
     /// <summary>カラムコメントの先頭セルアドレスを表します。</summary>
-    private const string CellOfColumnCommentText = "G14";
+    private const string _cellOfColumnCommentText = "G14";
 
     /// <summary>PK 列として判定するセル値を表します。</summary>
-    private const string CellValueOfPK = "PK";
+    private const string _cellValueOfPk = "PK";
 
     /// <summary>必須列として判定するセル値を表します。</summary>
-    private const string CellValueOfNotNull = "Yes";
+    private const string _cellValueOfNotNull = "Yes";
 
     /// <summary>
     /// 指定されたワークシートが対象の使徒であるかを取得します。
@@ -62,8 +62,8 @@ internal static class ClosedXmlExtensions
     {
         ArgumentNullException.ThrowIfNull(worksheet);
 
-        var keyword = worksheet.GetCellStringOrEmpty(CellOfTargetSheetKeyword).Trim().NullIfEmpty();
-        return keyword == TargetSheetKeyword1 || keyword == TargetSheetKeyword2;
+        var keyword = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfTargetSheetKeyword).Trim().NullIfEmpty();
+        return keyword is ClosedXmlExtensions._targetSheetKeyword1 or ClosedXmlExtensions._targetSheetKeyword2;
     }
 
     /// <summary>
@@ -92,8 +92,8 @@ internal static class ClosedXmlExtensions
     {
         ArgumentNullException.ThrowIfNull(worksheet);
 
-        var physicalName = worksheet.GetCellStringOrEmpty(CellOfTablePhysicalName).Trim().NullIfEmpty();
-        var logicalName = worksheet.GetCellStringOrEmpty(CellOfTableLogicalName).Trim().NullIfEmpty();
+        var physicalName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfTablePhysicalName).Trim().NullIfEmpty();
+        var logicalName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfTableLogicalName).Trim().NullIfEmpty();
 
         var definition = physicalName != null
             ? new TableDefinition
@@ -140,15 +140,15 @@ internal static class ClosedXmlExtensions
     /// <returns>継続可能な場合は true。それ以外は false。</returns>
     private static bool TryLoadColumnDefinition(this IXLWorksheet worksheet, int rowOffset, ref int issuedPkNumber, out ColumnDefinition? definition)
     {
-        var numberName = worksheet.GetCellStringOrEmpty(CellOfColumnNumberName, rowOffset).Trim().NullIfEmpty();
-        var physicalName = worksheet.GetCellStringOrEmpty(CellOfColumnPhysicalName, rowOffset).Trim().NullIfEmpty();
-        var logicalName = worksheet.GetCellStringOrEmpty(CellOfColumnLogicalName, rowOffset).Trim().NullIfEmpty();
-        var dataTypeName = worksheet.GetCellStringOrEmpty(CellOfColumnDataTypeName, rowOffset).Trim().NullIfEmpty();
-        var commentText = worksheet.GetCellStringOrEmpty(CellOfColumnCommentText, rowOffset).Trim().NullIfEmpty();
+        var numberName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnNumberName, rowOffset).Trim().NullIfEmpty();
+        var physicalName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnPhysicalName, rowOffset).Trim().NullIfEmpty();
+        var logicalName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnLogicalName, rowOffset).Trim().NullIfEmpty();
+        var dataTypeName = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnDataTypeName, rowOffset).Trim().NullIfEmpty();
+        var commentText = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnCommentText, rowOffset).Trim().NullIfEmpty();
 
-        var isPkOrNotNullText = worksheet.GetCellStringOrEmpty(CellOfColumnIsPkOrNotNull, rowOffset).Trim();
-        var isNotNull = isPkOrNotNullText.Contains(CellValueOfNotNull, StringComparison.OrdinalIgnoreCase);
-        var isPk = isPkOrNotNullText.Contains(CellValueOfPK, StringComparison.OrdinalIgnoreCase);
+        var isPkOrNotNullText = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfColumnIsPkOrNotNull, rowOffset).Trim();
+        var isNotNull = isPkOrNotNullText.Contains(ClosedXmlExtensions._cellValueOfNotNull, StringComparison.OrdinalIgnoreCase);
+        var isPk = isPkOrNotNullText.Contains(ClosedXmlExtensions._cellValueOfPk, StringComparison.OrdinalIgnoreCase);
 
         // No.列と物理カラム名ともに有効(空欄以外)な場合に限り、カラム情報として抽出します。
         definition = numberName != null && physicalName != null
@@ -173,7 +173,7 @@ internal static class ClosedXmlExtensions
     /// <typeparam name="T">要素の型。</typeparam>
     /// <param name="self">要素の列挙子。</param>
     /// <returns>null でない要素の列挙子。</returns>
-    private static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> self) => self ?? Enumerable.Empty<T>();
+    private static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? self) => self ?? [];
 
     /// <summary>
     /// 空文字列であれば null にします。

@@ -5,12 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ExcelToA5er.Metadatas;
+namespace ExcelToA5er.Metadata;
 
 /// <summary>
 /// テーブル情報を表します。
 /// </summary>
-internal partial class TableDefinition
+internal sealed partial class TableDefinition
 {
     /// <summary>
     /// 物理テーブル名を取得します。

@@ -19,6 +19,7 @@ internal static class Program
     internal static void Main()
     {
         ApplicationConfiguration.Initialize();
-        Application.Run(new MainForm());
+        using var mainForm = new MainForm();
+        Application.Run(mainForm);
     }
 }

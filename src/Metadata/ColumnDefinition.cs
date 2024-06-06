@@ -5,12 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ExcelToA5er.Metadatas;
+namespace ExcelToA5er.Metadata;
 
 /// <summary>
 /// カラム情報を表します。
 /// </summary>
-internal class ColumnDefinition
+internal sealed class ColumnDefinition
 {
     /// <summary>
     /// 物理カラム名を取得または設定します。

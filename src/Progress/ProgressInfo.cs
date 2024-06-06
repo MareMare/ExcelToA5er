@@ -50,5 +50,5 @@ public class ProgressInfo
     /// <param name="message">進捗メッセージ。</param>
     /// <param name="percent">進捗率 (0～100%)。</param>
     /// <returns>進捗情報。</returns>
-    public static ProgressInfo New(string message, double percent) => new () { Message = message, Percentage = percent };
+    public static ProgressInfo New(string message, double percent) => new() { Message = message, Percentage = percent };
 }

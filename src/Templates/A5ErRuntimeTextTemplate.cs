@@ -18,9 +18,9 @@ namespace ExcelToA5er.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+    #line 1 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public partial class A5erRuntimeTextTemplate : A5erRuntimeTextTemplateBase
+    public partial class A5ErRuntimeTextTemplate : A5ErRuntimeTextTemplateBase
     {
 #line hidden
         /// <summary>
@@ -48,118 +48,118 @@ RDBMSTypeName=Microsoft SQL Server 2008
 
 ");
             
-            #line 24 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 24 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
  foreach (var tableInfo in this.TableDefinitions) { 
             
             #line default
             #line hidden
             
-            #line 25 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 25 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
  var point = this.ToPoint(tableInfo); 
             
             #line default
             #line hidden
             this.Write("\r\n[Entity]\r\nPName=");
             
-            #line 28 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 28 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(tableInfo.PhysicalName));
             
             #line default
             #line hidden
             this.Write("\r\nLName=");
             
-            #line 29 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 29 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(tableInfo.LogicalName));
             
             #line default
             #line hidden
             this.Write("\r\nComment=\r\nTableOption=\r\nPage=MAIN\r\nLeft=");
             
-            #line 33 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 33 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(point.X));
             
             #line default
             #line hidden
             this.Write("\r\nTop=");
             
-            #line 34 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 34 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(point.Y));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 35 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 35 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
  foreach (var columnInfo in tableInfo.ColumnDefinitions) { 
             
             #line default
             #line hidden
             this.Write("Field=\"");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.LogicalName));
             
             #line default
             #line hidden
             this.Write("\",\"");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.PhysicalName));
             
             #line default
             #line hidden
             this.Write("\",\"");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.SqlDataTypeName));
             
             #line default
             #line hidden
             this.Write("\",");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.IsNotNullText));
             
             #line default
             #line hidden
             this.Write(",");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.PkNumberText));
             
             #line default
             #line hidden
             this.Write(",\"\",\"");
             
-            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 36 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(columnInfo.Comment));
             
             #line default
             #line hidden
             this.Write("\",$FFFFFFFF,\"\"\r\n");
             
-            #line 37 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 37 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("Position=\"MAIN\",");
             
-            #line 38 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 38 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(point.X));
             
             #line default
             #line hidden
             this.Write(",");
             
-            #line 38 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 38 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(point.Y));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 39 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5erRuntimeTextTemplate.tt"
+            #line 39 "C:\Users\maref\Documents\GitHub\MareMare\ExcelToA5er\src\Templates\A5ErRuntimeTextTemplate.tt"
  } 
             
             #line default
@@ -175,7 +175,7 @@ RDBMSTypeName=Microsoft SQL Server 2008
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public class A5erRuntimeTextTemplateBase
+    public class A5ErRuntimeTextTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;
@@ -189,7 +189,7 @@ RDBMSTypeName=Microsoft SQL Server 2008
         /// <summary>
         /// The string builder that generation-time code is using to assemble generated output
         /// </summary>
-        protected System.Text.StringBuilder GenerationEnvironment
+        public System.Text.StringBuilder GenerationEnvironment
         {
             get
             {
