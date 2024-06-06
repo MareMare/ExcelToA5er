@@ -31,7 +31,7 @@ public static class Disposable
     /// <summary>
     /// 何もしない既定の Dispose 可能なインスタンスを表します。
     /// </summary>
-    private class NopDisposable : IDisposable
+    private sealed class NopDisposable : IDisposable
     {
         /// <inheritdoc />
         public void Dispose()
@@ -43,7 +43,7 @@ public static class Disposable
     /// <summary>
     /// 匿名の <see cref="IDisposable" /> インターフェイスの実装を表します。
     /// </summary>
-    private class AnonymousDisposable : IDisposable
+    private sealed class AnonymousDisposable : IDisposable
     {
         /// <summary><see cref="IDisposable.Dispose" /> が呼ばれた時の処理を行うメソッドのデリゲートを表します。</summary>
         private volatile Action? _dispose;

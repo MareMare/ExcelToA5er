@@ -6,7 +6,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using ExcelToA5er.Generators;
-using ExcelToA5er.Metadatas;
+using ExcelToA5er.Metadata;
 using ExcelToA5er.Progress;
 using ExcelToA5er.Templates;
 
@@ -18,7 +18,7 @@ namespace ExcelToA5er;
 public partial class MainForm : Form
 {
     /// <summary>非同期操作の実行時間としての最低時間を表します。</summary>
-    private static readonly TimeSpan DelayTimeSpan = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan _delayTimeSpan = TimeSpan.FromSeconds(2);
 
     /// <summary>現在のテーブル定義書情報を表します。</summary>
     private XlsxInformation? _currentXlsxInfo;
@@ -38,8 +38,8 @@ public partial class MainForm : Form
     /// <returns>リストボックス項目のコレクション。</returns>
     private static DisplayItem[] ToDisplayItems(XlsxInformation xlsxInfo)
     {
-        var items = xlsxInfo?.TableDefinitions?.Select(definition => new DisplayItem(definition)).ToArray();
-        return items ?? Array.Empty<DisplayItem>();
+        var items = xlsxInfo.TableDefinitions.Select(definition => new DisplayItem(definition)).ToArray();
+        return items ?? [];
     }
 
     /// <summary>
@@ -49,17 +49,22 @@ public partial class MainForm : Form
     /// <returns>テーブル定義情報。</returns>
     private async Task<XlsxInformation> LoadXlsxAsync(string xlsxFilePath)
     {
-        using var progressForm = new ProgressForm { Title = "読み込み" };
-        await using var progressScoap = progressForm.UseProgressFormScope(this);
-        progressScoap.Reporter.ReportStarting("読み込み中です。しばらくお待ちください。");
+        using var progressForm = new ProgressForm();
+        progressForm.Title = "読み込み";
 
-        var loadTask = XlsxInformation.LoadAsync(xlsxFilePath);
-        var delayTask = Task.Delay(MainForm.DelayTimeSpan);
-        await Task.WhenAll(loadTask, delayTask).ConfigureAwait(true);
+        var progressScope = progressForm.UseProgressFormScope(this);
+        await using (progressScope.ConfigureAwait(true))
+        {
+            progressScope.Reporter.ReportStarting("読み込み中です。しばらくお待ちください。");
 
-        var xlsxInfo = await loadTask.ConfigureAwait(true);
-        await progressScoap.Reporter.ReportCompletedAsync("読み込みが完了しました。").ConfigureAwait(true);
-        return xlsxInfo;
+            var loadTask = XlsxInformation.LoadAsync(xlsxFilePath);
+            var delayTask = Task.Delay(MainForm._delayTimeSpan);
+            await Task.WhenAll(loadTask, delayTask).ConfigureAwait(true);
+
+            var xlsxInfo = await loadTask.ConfigureAwait(true);
+            await progressScope.Reporter.ReportCompletedAsync("読み込みが完了しました。").ConfigureAwait(true);
+            return xlsxInfo;
+        }
     }
 
     /// <summary>
@@ -70,16 +75,21 @@ public partial class MainForm : Form
     /// <returns>完了を表すタスク。</returns>
     private async Task SaveA5erAsync(string outputPath, ICollection<TableDefinition> tableDefinitions)
     {
-        using var progressForm = new ProgressForm { Title = "変換" };
-        await using var progressScoap = progressForm.UseProgressFormScope(this);
-        progressScoap.Reporter.ReportStarting("変換中です。しばらくお待ちください。");
+        using var progressForm = new ProgressForm();
+        progressForm.Title = "変換";
 
-        var generateTask = new A5erRuntimeTextTemplate(tableDefinitions).GenerateAsync(outputPath);
-        var delayTask = Task.Delay(MainForm.DelayTimeSpan);
-        await Task.WhenAll(generateTask, delayTask).ConfigureAwait(true);
+        var progressScope = progressForm.UseProgressFormScope(this);
+        await using (progressScope.ConfigureAwait(true))
+        {
+            progressScope.Reporter.ReportStarting("変換中です。しばらくお待ちください。");
 
-        await generateTask.ConfigureAwait(true);
-        await progressScoap.Reporter.ReportCompletedAsync("変換完了しました。").ConfigureAwait(true);
+            var generateTask = new A5ErRuntimeTextTemplate(tableDefinitions).GenerateAsync(outputPath);
+            var delayTask = Task.Delay(MainForm._delayTimeSpan);
+            await Task.WhenAll(generateTask, delayTask).ConfigureAwait(true);
+
+            await generateTask.ConfigureAwait(true);
+            await progressScope.Reporter.ReportCompletedAsync("変換完了しました。").ConfigureAwait(true);
+        }
     }
 
     /// <summary>
@@ -99,7 +109,7 @@ public partial class MainForm : Form
     /// <param name="sender">イベントソース。</param>
     /// <param name="e">イベントデータ。</param>
     private void ListBoxTableInfo_SelectedIndexChanged(object sender, EventArgs e) =>
-        this.buttonToConvert.Enabled = this.listBoxTableInfo.SelectedItems.Count > 0 && this._currentXlsxInfo?.A5erFilePath != null;
+        this.buttonToConvert.Enabled = this.listBoxTableInfo.SelectedItems.Count > 0 && this._currentXlsxInfo?.A5ErFilePath != null;
 
     /// <summary>
     /// [参照] ボタンがクリックされたときに発生するイベントのイベントハンドラです。
@@ -108,25 +118,24 @@ public partial class MainForm : Form
     /// <param name="e">イベントデータ。</param>
     private async void ButtonToBrowseXlsx_Click(object sender, EventArgs e)
     {
-        var openFileDialog = new OpenFileDialog
-        {
-            Title = "テーブル定義書を選択してください。",
-            Filter = "テーブル定義書(*.xlsx)|*.xlsx",
-            RestoreDirectory = true,
-            CheckFileExists = true,
-            CheckPathExists = true,
-            ReadOnlyChecked = true,
-            ShowReadOnly = true,
-        };
+        using var openFileDialog = new OpenFileDialog();
+        openFileDialog.Title = @"テーブル定義書を選択してください。";
+        openFileDialog.Filter = @"テーブル定義書(*.xlsx)|*.xlsx";
+        openFileDialog.RestoreDirectory = true;
+        openFileDialog.CheckFileExists = true;
+        openFileDialog.CheckPathExists = true;
+        openFileDialog.ReadOnlyChecked = true;
+        openFileDialog.ShowReadOnly = true;
+
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
             var xlsxInfo = await this.LoadXlsxAsync(openFileDialog.FileName).ConfigureAwait(true);
-            var items = MainForm.ToDisplayItems(xlsxInfo);
+            var items = MainForm.ToDisplayItems(xlsxInfo).Cast<object>().ToArray();
             this._currentXlsxInfo = xlsxInfo;
             this.listBoxTableInfo.Items.Clear();
             this.listBoxTableInfo.Items.AddRange(items);
             this.textBoxXlsxFilePath.Text = Path.GetFileName(xlsxInfo.XlsxFilePath);
-            this.textBoxOutputFilePath.Text = Path.GetFileName(xlsxInfo.A5erFilePath);
+            this.textBoxOutputFilePath.Text = Path.GetFileName(xlsxInfo.A5ErFilePath);
         }
     }
 
@@ -137,21 +146,21 @@ public partial class MainForm : Form
     /// <param name="e">イベントデータ。</param>
     private async void ButtonToConvert_Click(object sender, EventArgs e)
     {
-        var a5erFilePath = this._currentXlsxInfo?.A5erFilePath;
-        if (a5erFilePath == null)
+        var a5ErFilePath = this._currentXlsxInfo?.A5ErFilePath;
+        if (a5ErFilePath == null)
         {
             return;
         }
 
         var selectedItems = this.listBoxTableInfo.SelectedItems.OfType<DisplayItem>().ToArray();
         var tableDefinitions = selectedItems.Select(item => item.TableInfo).ToArray();
-        await this.SaveA5erAsync(a5erFilePath, tableDefinitions).ConfigureAwait(true);
+        await this.SaveA5erAsync(a5ErFilePath, tableDefinitions).ConfigureAwait(true);
     }
 
     /// <summary>
     /// リストボックス項目を表します。
     /// </summary>
-    private class DisplayItem
+    private sealed class DisplayItem
     {
         /// <summary>
         /// <see cref="DisplayItem"/> クラスの新しいインスタンスを生成します。
@@ -172,6 +181,6 @@ public partial class MainForm : Form
         public TableDefinition TableInfo { get; }
 
         /// <inheritdoc />
-        public override string ToString() => this.TableInfo != null ? $"{this.TableInfo.PhysicalName}: {this.TableInfo.LogicalName}" : "<未設定>";
+        public override string ToString() => $"{this.TableInfo.PhysicalName}: {this.TableInfo.LogicalName}";
     }
 }

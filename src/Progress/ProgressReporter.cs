@@ -10,7 +10,7 @@ namespace ExcelToA5er.Progress;
 /// <summary>
 /// 進行状況の報告を提供します。
 /// </summary>
-internal class ProgressReporter : Progress<ProgressInfo>, IProgressReporter
+internal sealed class ProgressReporter : Progress<ProgressInfo>, IProgressReporter
 {
     /// <summary>完了または失敗字のレポートに対するデフォルトのタイムアウト時間を表します。</summary>
     private readonly TimeSpan _defaultTimeout;

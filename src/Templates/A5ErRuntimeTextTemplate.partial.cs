@@ -1,25 +1,25 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="A5erRuntimeTextTemplate.partial.cs" company="MareMare">
+// <copyright file="A5ErRuntimeTextTemplate.partial.cs" company="MareMare">
 // Copyright © 2021 MareMare All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ExcelToA5er.Generators;
-using ExcelToA5er.Metadatas;
+using ExcelToA5er.Metadata;
 
 namespace ExcelToA5er.Templates;
 
 /// <summary>
 /// A5ER ファイルを生成する実行時テンプレートを表します。
 /// </summary>
-public partial class A5erRuntimeTextTemplate : IGenerator
+public partial class A5ErRuntimeTextTemplate : IGenerator
 {
     /// <summary>
-    /// <see cref="A5erRuntimeTextTemplate"/> クラスの新しいインスタンスを生成します。
+    /// <see cref="A5ErRuntimeTextTemplate"/> クラスの新しいインスタンスを生成します。
     /// </summary>
     /// <param name="tableDefinitions">テーブル情報のコレクション。</param>
-    internal A5erRuntimeTextTemplate(ICollection<TableDefinition> tableDefinitions)
+    internal A5ErRuntimeTextTemplate(ICollection<TableDefinition> tableDefinitions)
     {
         ArgumentNullException.ThrowIfNull(tableDefinitions);
         this.TableDefinitions = tableDefinitions.ToList();
