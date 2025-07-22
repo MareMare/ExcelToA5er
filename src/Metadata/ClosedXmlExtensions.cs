@@ -20,6 +20,9 @@ internal static class ClosedXmlExtensions
     /// <summary>対象シートを判断する識別子のキーワードを表します。</summary>
     private const string _targetSheetKeyword2 = "エンティティ情報";
 
+    /// <summary>対象シートのカラム情報を判断する識別子のキーワードを表します。</summary>
+    private const string _targetSheetKeyword3 = "カラム情報";
+
     /// <summary>対象シートの識別子のセルアドレスを表します。</summary>
     private const string _cellOfTargetSheetKeyword = "A1";
 
@@ -30,22 +33,22 @@ internal static class ClosedXmlExtensions
     private const string _cellOfTablePhysicalName = "C6";
 
     /// <summary>No.列の先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnNumberName = "A14";
+    private const string _cellOfColumnNumberName = "A1";
 
     /// <summary>論理カラム名の先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnLogicalName = "B14";
+    private const string _cellOfColumnLogicalName = "B1";
 
     /// <summary>物理カラム名の先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnPhysicalName = "C14";
+    private const string _cellOfColumnPhysicalName = "C1";
 
     /// <summary>カラムデータ型名の先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnDataTypeName = "D14";
+    private const string _cellOfColumnDataTypeName = "D1";
 
     /// <summary>必須およびPK列の先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnIsPkOrNotNull = "E14";
+    private const string _cellOfColumnIsPkOrNotNull = "E1";
 
     /// <summary>カラムコメントの先頭セルアドレスを表します。</summary>
-    private const string _cellOfColumnCommentText = "G14";
+    private const string _cellOfColumnCommentText = "G1";
 
     /// <summary>PK 列として判定するセル値を表します。</summary>
     private const string _cellValueOfPk = "PK";
@@ -114,8 +117,14 @@ internal static class ClosedXmlExtensions
     /// <returns>カラム情報のコレクション。</returns>
     private static IEnumerable<ColumnDefinition> LoadColumnDefinitions(this IXLWorksheet worksheet)
     {
+        var foundFirstRowOffset = worksheet.FindColumnsRow();
+        if (foundFirstRowOffset is null)
+        {
+            yield break;
+        }
+
         var issuedPkNumber = 0;
-        for (var rowOffset = 0; ; rowOffset++)
+        for (var rowOffset = foundFirstRowOffset.Value; ; rowOffset++)
         {
             var canContinue = worksheet.TryLoadColumnDefinition(rowOffset, ref issuedPkNumber, out var definition);
             if (!canContinue)
@@ -128,6 +137,26 @@ internal static class ClosedXmlExtensions
                 yield return definition;
             }
         }
+    }
+
+    /// <summary>
+    /// A1 セルから 50 行の範囲で "カラム情報" の行を検索し、見つかった行 +2 行を返却します。
+    /// </summary>
+    /// <param name="worksheet"><see cref="IXLWorksheet"/>。</param>
+    /// <returns>A1セルからの行のオフセット。</returns>
+    private static int? FindColumnsRow(this IXLWorksheet worksheet)
+    {
+        // "カラム情報" の行を 50 行の範囲で検索し、見つかった行 +2 行を返却します。
+        for (var rowOffset = 0; rowOffset < 50; rowOffset++)
+        {
+            var keyword = worksheet.GetCellStringOrEmpty(ClosedXmlExtensions._cellOfTargetSheetKeyword, rowOffset).Trim().NullIfEmpty();
+            if (keyword == _targetSheetKeyword3)
+            {
+                return rowOffset + 2; // 2: カラム情報の行＋No.行
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -195,7 +224,7 @@ internal static class ClosedXmlExtensions
         var address = worksheet.Cell(baseCellAddress).Address;
         var rowNumber = address.RowNumber + rowOffset;
         var columnNumber = address.ColumnNumber + columnOffset;
-        return worksheet.Cell(rowNumber, columnNumber)?.Address.ToString();
+        return worksheet.Cell(rowNumber, columnNumber).Address.ToString();
     }
 
     /// <summary>
@@ -209,7 +238,7 @@ internal static class ClosedXmlExtensions
     private static string GetCellStringOrEmpty(this IXLWorksheet worksheet, string baseCellAddress, int rowOffset = 0, int columnOffset = 0)
     {
         var cellAddress = worksheet.ResolveCellAddress(baseCellAddress, rowOffset, columnOffset);
-        var cellString = worksheet.Cell(cellAddress).GetFormattedString();
+        var cellString = cellAddress is not null ? worksheet.Cell(cellAddress).GetFormattedString() : null;
         return cellString ?? string.Empty;
     }
 }
