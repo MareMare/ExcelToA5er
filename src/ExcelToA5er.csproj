@@ -11,9 +11,9 @@
     <Copyright>© MareMare</Copyright>
     <Description>A5:SQL Mk-2 で出力されたテーブル定義書からER図(.a5er)へ変換するツールです。</Description>
     <Authors>MareMare</Authors>
-    <VersionPrefix>2.1.0</VersionPrefix>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

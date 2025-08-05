@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Packaging;
 
 namespace ExcelToA5er.Metadata;
 
@@ -23,9 +23,14 @@ internal partial class XlsxInformation
     {
         static XlsxInformation Load(string xlsxFilePath)
         {
-            using var workbook = new XLWorkbook(xlsxFilePath);
-            var targetWorkSheets = workbook.Worksheets.Where(worksheet => worksheet.IsTargetSheet()).ToArray();
+            using var stream = new FileStream(xlsxFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var document = SpreadsheetDocument.Open(stream, false);
+            var workbookPart = document.WorkbookPart ?? throw new InvalidOperationException("WorkbookPart not found");
+            var workbook = workbookPart.Workbook;
+
+            var targetWorkSheets = workbook.GetTargetWorksheets(workbookPart).ToArray();
             var tableDefinitions = targetWorkSheets.LoadTableDefinitions().ToArray();
+
             var info = new XlsxInformation
             {
                 XlsxFilePath = xlsxFilePath,
