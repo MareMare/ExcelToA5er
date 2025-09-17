@@ -5,6 +5,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+using System.Text.Json;
 using ExcelToA5er.Generators;
 using ExcelToA5er.Metadata;
 using ExcelToA5er.Progress;
@@ -43,6 +45,34 @@ public partial class MainForm : Form
     }
 
     /// <summary>
+    /// 物理テーブル名リストを読み込み、物理テーブル名の配列を取得します。
+    /// </summary>
+    /// <param name="tableNamesFilePath">物理テーブル名リストのファイルパス。</param>
+    /// <returns>物理テーブル名の配列。</returns>
+    private static string[]? LoadTargetTableNamesFromJson(string tableNamesFilePath)
+    {
+        if (!File.Exists(tableNamesFilePath))
+        {
+            return null;
+        }
+
+        try
+        {
+            // 物理テーブル名リストを読み込みます。
+            var json = File.ReadAllText(tableNamesFilePath);
+            return JsonSerializer.Deserialize<string[]>(json);
+        }
+        catch (FileNotFoundException)
+        {
+            return null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// 非同期操作として、XLSX ファイルを読み込みます。
     /// </summary>
     /// <param name="xlsxFilePath">XLSX ファイルパス。</param>
@@ -73,7 +103,7 @@ public partial class MainForm : Form
     /// <param name="outputPath">出力先ファイルパス。</param>
     /// <param name="tableDefinitions">テーブル情報のコレクション。</param>
     /// <returns>完了を表すタスク。</returns>
-    private async Task SaveA5erAsync(string outputPath, ICollection<TableDefinition> tableDefinitions)
+    private async Task SaveA5ErAsync(string outputPath, ICollection<TableDefinition> tableDefinitions)
     {
         using var progressForm = new ProgressForm();
         progressForm.Title = "変換";
@@ -83,13 +113,67 @@ public partial class MainForm : Form
         {
             progressScope.Reporter.ReportStarting("変換中です。しばらくお待ちください。");
 
-            var generateTask = new A5ErRuntimeTextTemplate(tableDefinitions).GenerateAsync(outputPath);
+            var generateTask = this.GenerateAsync(outputPath, tableDefinitions);
             var delayTask = Task.Delay(MainForm._delayTimeSpan);
             await Task.WhenAll(generateTask, delayTask).ConfigureAwait(true);
 
             await generateTask.ConfigureAwait(true);
             await progressScope.Reporter.ReportCompletedAsync("変換完了しました。").ConfigureAwait(true);
         }
+    }
+
+    /// <summary>
+    /// 非同期操作として、A5ER ファイルを生成します。
+    /// </summary>
+    /// <param name="outputPath">出力先ファイルパス。</param>
+    /// <param name="tableDefinitions">テーブル情報のコレクション。</param>
+    /// <returns>完了を表すタスク。</returns>
+    private async Task GenerateAsync(string outputPath, ICollection<TableDefinition> tableDefinitions)
+    {
+        if (!this.checkBoxToSplitOutputFile.Checked)
+        {
+            await new A5ErRuntimeTextTemplate(tableDefinitions).GenerateAsync(outputPath).ConfigureAwait(false);
+            return;
+        }
+
+        var tasks = tableDefinitions
+            .Select(tableDefinition =>
+            {
+                var outputDirectory = Path.GetDirectoryName(outputPath) ?? string.Empty;
+                var fileName = Path.GetFileNameWithoutExtension(outputPath);
+                var fileExtension = Path.GetExtension(outputPath);
+                var partialOutputFileName = $"{fileName}_{tableDefinition.PhysicalName}{fileExtension}";
+                var partialOutputPath = Path.Combine(outputDirectory, partialOutputFileName);
+                return new A5ErRuntimeTextTemplate([tableDefinition]).GenerateAsync(partialOutputPath);
+            });
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// テーブル情報のコレクションを取得します。
+    /// </summary>
+    /// <returns>テーブル情報のコレクション。</returns>
+    private TableDefinition[] GetTargetTableDefinitions()
+    {
+        if (this.checkBoxToUseTableNames.Checked)
+        {
+            // 物理テーブル名リストを使用する場合、JSONファイルに従ってテーブル情報のコレクションを抽出します。
+            var jsonFilePath = this.textBoxTableNamesFilePath.Text;
+            var targetTableNames = MainForm.LoadTargetTableNamesFromJson(jsonFilePath);
+            var loadedAllTableDefinitions = this.listBoxTableInfo.Items.OfType<DisplayItem>().Select(item => item.TableInfo).ToArray();
+            var filteredTableDefinitions = loadedAllTableDefinitions
+                .Join(
+                    targetTableNames ?? [],
+                    outer => outer.PhysicalName,
+                    inner => inner,
+                    (outer, inner) => outer)
+                .ToArray();
+            return filteredTableDefinitions;
+        }
+
+        var selectedItems = this.listBoxTableInfo.SelectedItems.OfType<DisplayItem>().ToArray();
+        var tableDefinitions = selectedItems.Select(item => item.TableInfo).ToArray();
+        return tableDefinitions;
     }
 
     /// <summary>
@@ -101,6 +185,10 @@ public partial class MainForm : Form
     {
         this.listBoxTableInfo.Items.Clear();
         this.buttonToConvert.Enabled = false;
+
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        var versionText = version?.ToString(3);
+        this.Text = versionText is not null ? $"ExcelToA5er ({versionText})" : "ExcelToA5er";
     }
 
     /// <summary>
@@ -140,6 +228,27 @@ public partial class MainForm : Form
     }
 
     /// <summary>
+    /// [参照] ボタンがクリックされたときに発生するイベントのイベントハンドラです。
+    /// </summary>
+    /// <param name="sender">イベントソース。</param>
+    /// <param name="e">イベントデータ。</param>
+    private void ButtonToBrowseTableNames_Click(object sender, EventArgs e)
+    {
+        using var openFileDialog = new OpenFileDialog();
+        openFileDialog.Title = @"物理テーブル名リストを選択してください。";
+        openFileDialog.Filter = @"物理テーブル名リスト(*.json)|*.json";
+        openFileDialog.RestoreDirectory = true;
+        openFileDialog.CheckFileExists = true;
+        openFileDialog.CheckPathExists = true;
+        openFileDialog.ReadOnlyChecked = true;
+        openFileDialog.ShowReadOnly = true;
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            this.textBoxTableNamesFilePath.Text = openFileDialog.FileName;
+        }
+    }
+
+    /// <summary>
     /// [変換] ボタンがクリックされたときに発生するイベントのイベントハンドラです。
     /// </summary>
     /// <param name="sender">イベントソース。</param>
@@ -152,9 +261,8 @@ public partial class MainForm : Form
             return;
         }
 
-        var selectedItems = this.listBoxTableInfo.SelectedItems.OfType<DisplayItem>().ToArray();
-        var tableDefinitions = selectedItems.Select(item => item.TableInfo).ToArray();
-        await this.SaveA5erAsync(a5ErFilePath, tableDefinitions).ConfigureAwait(true);
+        var tableDefinitions = this.GetTargetTableDefinitions();
+        await this.SaveA5ErAsync(a5ErFilePath, tableDefinitions).ConfigureAwait(true);
     }
 
     /// <summary>
